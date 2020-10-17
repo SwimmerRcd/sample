@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -27,6 +28,7 @@ namespace sample
     {
       services.AddControllers();
       services.AddScoped<ICharactorService, CharactorService>();
+      services.AddAutoMapper(typeof(Startup));
       // services.AddControllersWithViews().AddNewtonsoftJson(options =>
       // {
       //   //忽略循环引用
