@@ -7,6 +7,7 @@ namespace sample.Services.CharactorService
 {
   public interface ICharactorService
   {
+    // Task<ServiceResponse<List<GetCharactorDto>>> GetAllCharactors();
     Task<ServiceResponse<List<GetCharactorDto>>> GetAllCharactors();
     Task<ServiceResponse<GetCharactorDto>> GetCharactorById(int id);
     Task<ServiceResponse<List<GetCharactorDto>>> AddCharactor(AddCharactorDto newCharactor);
