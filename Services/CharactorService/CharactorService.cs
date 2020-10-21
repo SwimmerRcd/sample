@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 using AutoMapper;
 using sample.Dtos.Charactor;
 using sample.Models;
-using static Utils.OracleHelper;
+// using static Utils.OracleHelper;
+using static Utils.OracleDbHelperAsync;
 using static System.Console;
 using Oracle.ManagedDataAccess.Client;
 using System.Data;
@@ -48,12 +49,12 @@ namespace sample.Services.CharactorService
             //     AddInputParameter("viIntelligence", newCharactor.Intelligence, OracleDbType.Int64),
             //     AddInputParameter("viRpgclass", string.Format("{0:d2}", Convert.ToInt64(newCharactor.Class)), OracleDbType.Varchar2, 2)
             // };
-            OracleConnection conn = OpenConn();
+            OracleConnection conn = await OpenConnAsync();
             int affectRows = 0;
             //when
             try
             {
-                affectRows = ExecuteSql(insertSql, null, conn);
+                affectRows = await ExecuteSqlAsync(insertSql, null, conn);
                 serviceResponse = await GetAllCharactors();
             }
             catch (Exception ex)
@@ -76,10 +77,10 @@ namespace sample.Services.CharactorService
             string querySql = @"select id, name, hitpoints, strength, defense, intelligence, class
                                   from charactor
                                  where rownum < 100";
-            OracleConnection conn = OpenConn();
+            OracleConnection conn = await OpenConnAsync();
             try
             {
-                DataTable dt = ReadTable(querySql, null, conn);
+                DataTable dt = await ReadTableAsync(querySql, null, conn);
                 List<Charactor> charactors = DataTableToList<Charactor>(dt);
                 serviceResponse.Data = (charactors.Select(c => _mapper.Map<GetCharactorDto>(c))).ToList();
             }
@@ -102,10 +103,10 @@ namespace sample.Services.CharactorService
                                    from charactor
                                   where id = {id}";
             // serviceResponse.Data = _mapper.Map<GetCharactorDto>(charactors.FirstOrDefault(c => c.Id == id));
-            OracleConnection conn = OpenConn();
+            OracleConnection conn = await OpenConnAsync();
             try
             {
-                DataTable dt = ReadTable(querySql, null, conn);
+                DataTable dt = await ReadTableAsync(querySql, null, conn);
                 List<Charactor> charactors = DataTableToList<Charactor>(dt);
                 // serviceResponse.Data = (charactors.Select(c => _mapper.Map<GetCharactorDto>(c))).ToList();
                 serviceResponse.Data = _mapper.Map<GetCharactorDto>(charactors[0]);
@@ -134,11 +135,11 @@ namespace sample.Services.CharactorService
                                          intelligence = {updateCharactorDto.Intelligence}, 
                                          class        = '{cls}'
                                   where id = {updateCharactorDto.Id}";
-            OracleConnection conn = OpenConn();
+            OracleConnection conn = await OpenConnAsync();
             int affectRows = 0;
             try
             {
-                affectRows = ExecuteSql(updateSql, null, conn);
+                affectRows = await ExecuteSqlAsync(updateSql, null, conn);
                 if (affectRows < 1)
                 {
                     throw new Exception($@"更新失败，未找到id为{updateCharactorDto.Id}的记录！");
@@ -170,11 +171,11 @@ namespace sample.Services.CharactorService
         {
             ServiceResponse<List<GetCharactorDto>> serviceResponse = new ServiceResponse<List<GetCharactorDto>>();
             string deleteSql = $@"delete charactor where id = {id}";
-            OracleConnection conn = OpenConn();
+            OracleConnection conn = await OpenConnAsync();
             int affectRows = 0;
             try
             {
-                affectRows = ExecuteSql(deleteSql, null, conn);
+                affectRows = await ExecuteSqlAsync(deleteSql, null, conn);
                 if (affectRows < 1)
                 {
                     throw new Exception($@"删除失败，未找到id为{id}的记录！");
@@ -189,7 +190,8 @@ namespace sample.Services.CharactorService
                 serviceResponse.Success = false;
                 serviceResponse.Message = ex.Message;
             }
-            finally{
+            finally
+            {
                 conn.Close();
             }
             return serviceResponse;
