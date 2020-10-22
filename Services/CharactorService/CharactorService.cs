@@ -81,7 +81,7 @@ namespace sample.Services.CharactorService
             try
             {
                 DataTable dt = await ReadTableAsync(querySql, null, conn);
-                List<Charactor> charactors = DataTableToList<Charactor>(dt);
+                List<Charactor> charactors = await DataTableToListAsync<Charactor>(dt);
                 serviceResponse.Data = (charactors.Select(c => _mapper.Map<GetCharactorDto>(c))).ToList();
             }
             catch (Exception ex)
@@ -107,7 +107,7 @@ namespace sample.Services.CharactorService
             try
             {
                 DataTable dt = await ReadTableAsync(querySql, null, conn);
-                List<Charactor> charactors = DataTableToList<Charactor>(dt);
+                List<Charactor> charactors = await DataTableToListAsync<Charactor>(dt);
                 // serviceResponse.Data = (charactors.Select(c => _mapper.Map<GetCharactorDto>(c))).ToList();
                 serviceResponse.Data = _mapper.Map<GetCharactorDto>(charactors[0]);
             }

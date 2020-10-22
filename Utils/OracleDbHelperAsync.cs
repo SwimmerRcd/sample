@@ -12,19 +12,41 @@ namespace Utils
 {
     public static class OracleDbHelperAsync
     {
-        public static string DataTableToJson(DataTable table)
+        public static async Task<string> DataTableToJsonAsync(DataTable table)
         {
             string JsonString = string.Empty;
-            JsonString = JsonConvert.SerializeObject(table);
+            await Task.Run(() =>
+            {
+                JsonString = JsonConvert.SerializeObject(table);
+            });
+            // JsonString = JsonConvert.SerializeObject(table);
             return JsonString;
         }
 
-        public static List<T> DataTableToList<T>(DataTable table)
+        public static async Task<List<T>> DataTableToListAsync<T>(DataTable table)
         {
-            string json = DataTableToJson(table);
-            List<T> list = JsonConvert.DeserializeObject<List<T>>(json);
+            string json = await DataTableToJsonAsync(table);
+            // List<T> list = JsonConvert.DeserializeObject<List<T>>(json);
+            List<T> list = null;
+            await Task.Run(() =>
+            {
+                list = JsonConvert.DeserializeObject<List<T>>(json);
+            });
             return list;
         }
+        // public static string DataTableToJson(DataTable table)
+        // {
+        //     string JsonString = string.Empty;
+        //     JsonString = JsonConvert.SerializeObject(table);
+        //     return JsonString;
+        // }
+
+        // public static List<T> DataTableToList<T>(DataTable table)
+        // {
+        //     string json = DataTableToJson(table);
+        //     List<T> list = JsonConvert.DeserializeObject<List<T>>(json);
+        //     return list;
+        // }
 
         /// <summary>
         /// 输入一个select语句,返回一个DataTable.
