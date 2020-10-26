@@ -48,6 +48,13 @@ namespace sample
 
       app.UseRouting();
 
+      app.UseCors(config =>
+            {
+                config.AllowAnyOrigin();
+                config.AllowAnyMethod();
+                config.AllowAnyHeader();
+            });
+
       app.UseAuthorization();
 
       app.UseEndpoints(endpoints =>
